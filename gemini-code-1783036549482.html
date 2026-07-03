@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create With Me — Premium Creative Portfolio</title>
+    <!-- Tailwind CSS for modern responsive layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- GSAP for smooth entrance and scroll animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#05050A',
+                        cardDark: 'rgba(15, 15, 25, 0.7)',
+                        accentPrimary: '#A855F7', // Violet
+                        accentSecondary: '#06B6D4', // Cyan
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Modern Glassmorphism & Custom Scrollbar styles */
+        body {
+            background-color: #05050a;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #05050a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f1f35;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a855f7;
+        }
+
+        .glass {
+            background: rgba(15, 15, 25, 0.65);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-nav {
+            background: rgba(5, 5, 10, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        /* Mouse glow backdrop */
+        #spotlight-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(6, 182, 212, 0.05) 50%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+
+        /* Custom glow borders on cards */
+        .glow-card {
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glow-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(to bottom right, rgba(255,255,255,0.1), rgba(255,255,255,0.01));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            transition: all 0.4s ease;
+        }
+        .glow-card:hover::before {
+            background: linear-gradient(to bottom right, #a855f7, #06b6d4);
+        }
+
+        /* Animated grid background */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+
+        /* Gradient Text Helper */
+        .text-gradient {
+            background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.5) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .text-accent-gradient {
+            background: linear-gradient(135deg, #A855F7 0%, #06B6D4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="text-slate-200 antialiased overflow-x-hidden bg-grid">
+
+    <!-- Spotlight backdrop effect -->
+    <div id="spotlight-glow" class="hidden md:block"></div>
+
+    <!-- Interactive background decorations -->
+    <div class="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-900/10 blur-[120px] pointer-events-none -z-10"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-cyan-900/10 blur-[120px] pointer-events-none -z-10"></div>
+
+    <!-- NAVIGATION HEADER -->
+    <header class="fixed top-0 left-0 w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-2 group">
+                <div class="relative w-8 h-8 rounded-lg bg-gradient-to-br from-accentPrimary to-accentSecondary flex items-center justify-center font-extrabold text-black text-sm transition-transform duration-300 group-hover:scale-105">
+                    C
+                </div>
+                <span class="text-white font-bold tracking-tight text-lg group-hover:text-accentSecondary transition-colors">Create With Me</span>
+            </a>
+
+            <!-- Desktop Nav Items -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+                <a href="#about" class="hover:text-white transition-colors py-2 relative group">
+                    About
+                    <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-accentPrimary to-accentSecondary transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#services" class="hover:text-white transition-colors py-2 relative group">
+                    Services
+                    <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-accentPrimary to-accentSecondary transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#portfolio" class="hover:text-white transition-colors py-2 relative group">
+                    Portfolio
+                    <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-accentPrimary to-accentSecondary transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#process" class="hover:text-white transition-colors py-2 relative group">
+                    My Process
+                    <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-accentPrimary to-accentSecondary transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#contact" class="hover:text-white transition-colors py-2 relative group">
+                    Contact
+                    <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-accentPrimary to-accentSecondary transition-all duration-300 group-hover:w-full"></span>
+                </a>
+            </nav>
+
+            <!-- Status Indicator / Hire Button -->
+            <div class="hidden lg:flex items-center gap-4">
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                    <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Available for Hire</span>
+                </div>
+                <a href="#contact" class="px-5 py-2.5 rounded-full bg-white text-dark text-sm font-bold hover:bg-transparent hover:text-white border border-transparent hover:border-white/20 transition-all duration-300">
+                    Let's Chat
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobile-menu-toggle" class="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1.5 focus:outline-none z-50">
+                <span class="block w-6 h-0.5 bg-white transition-transform duration-300" id="bar1"></span>
+                <span class="block w-6 h-0.5 bg-white transition-opacity duration-300" id="bar2"></span>
+                <span class="block w-6 h-0.5 bg-white transition-transform duration-300" id="bar3"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MOBILE MENU DRAWER -->
+    <div id="mobile-menu" class="fixed inset-0 z-40 bg-dark/95 backdrop-blur-xl flex flex-col justify-center px-12 space-y-8 transform translate-x-full transition-transform duration-500 ease-out md:hidden">
+        <a href="#about" class="text-2xl font-bold hover:text-accentSecondary transition-colors" onclick="toggleMobileMenu()">About Me</a>
+        <a href="#services" class="text-2xl font-bold hover:text-accentSecondary transition-colors" onclick="toggleMobileMenu()">Services</a>
+        <a href="#portfolio" class="text-2xl font-bold hover:text-accentSecondary transition-colors" onclick="toggleMobileMenu()">My Portfolio</a>
+        <a href="#process" class="text-2xl font-bold hover:text-accentSecondary transition-colors" onclick="toggleMobileMenu()">My Process</a>
+        <a href="#contact" class="text-2xl font-bold hover:text-accentSecondary transition-colors" onclick="toggleMobileMenu()">Hire Me</a>
+        <div class="pt-8 border-t border-white/10 flex flex-col gap-4">
+            <div class="flex items-center gap-2">
+                <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <p class="text-xs uppercase tracking-wider text-emerald-400 font-semibold">Available for Q3-Q4 2026</p>
+            </div>
+            <p class="text-sm text-slate-400">Based in Digital Frontier. Serving global brands.</p>
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="relative min-h-screen flex items-center justify-center pt-28 pb-16 px-6 overflow-hidden">
+        <!-- Floating shapes background -->
+        <div class="absolute top-[30%] left-[10%] w-72 h-72 bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none animate-pulse"></div>
+        <div class="absolute bottom-[20%] right-[10%] w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <!-- Dynamic Intro Tag -->
+            <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass border border-white/5 mb-8 animate-fade-in">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-accentPrimary"></span>
+                <span class="text-xs md:text-sm font-semibold tracking-wider text-slate-300 uppercase">Interactive Designer & Web Artisan</span>
+            </div>
+
+            <!-- Dynamic Headline -->
+            <h1 class="text-4xl sm:text-6xl md:text-8xl font-black tracking-tight leading-none mb-8 hero-title">
+                <span class="text-gradient block">SCULPTING HIGH-END</span>
+                <span class="text-accent-gradient block">DIGITAL ARTIFACTS</span>
+            </h1>
+
+            <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-12 font-medium leading-relaxed hero-subtitle">
+                I assist international scale-ups and creative founders with luxury branding, exquisite 3D illustration, and responsive front-end development.
+            </p>
+
+            <!-- Call to Actions -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 hero-ctas">
+                <a href="#portfolio" class="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-accentPrimary to-accentSecondary text-white font-extrabold hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:scale-[1.02] transition-all duration-300 text-center flex items-center justify-center gap-2">
+                    Explore My Portfolio
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+                <a href="#contact" class="w-full sm:w-auto px-8 py-4 rounded-full glass text-white font-bold hover:bg-white hover:text-black border border-white/10 transition-all duration-300 text-center">
+                    Start a Project
+                </a>
+            </div>
+
+            <!-- Real-time metrics dashboard in Hero -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-20 pt-10 border-t border-white/5 text-left hero-stats">
+                <div class="p-4 rounded-2xl glass">
+                    <p class="text-3xl md:text-4xl font-extrabold text-white">8+</p>
+                    <p class="text-xs uppercase text-slate-500 font-semibold tracking-wider mt-1">Years Of Experience</p>
+                </div>
+                <div class="p-4 rounded-2xl glass">
+                    <p class="text-3xl md:text-4xl font-extrabold text-white">120+</p>
+                    <p class="text-xs uppercase text-slate-500 font-semibold tracking-wider mt-1">International Deliveries</p>
+                </div>
+                <div class="p-4 rounded-2xl glass">
+                    <p class="text-3xl md:text-4xl font-extrabold text-white">98%</p>
+                    <p class="text-xs uppercase text-slate-500 font-semibold tracking-wider mt-1">Client Satisfaction</p>
+                </div>
+                <div class="p-4 rounded-2xl glass">
+                    <p class="text-3xl md:text-4xl font-extrabold text-white">GMT+1</p>
+                    <p class="text-xs uppercase text-slate-500 font-semibold tracking-wider mt-1">Flexible Dev Timezone</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT ME & SKILLS -->
+    <section id="about" class="py-24 px-6 max-w-7xl mx-auto relative z-10 scroll-mt-20">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <!-- Left Info Block -->
+            <div class="lg:col-span-5 space-y-8 animate-scroll">
+                <p class="text-sm font-bold uppercase tracking-widest text-accentSecondary">ABOUT ME? WHO AM I?</p>
+                <h2 class="text-3xl md:text-5xl font-black text-white leading-tight">Crafting fine aesthetics, line by line.</h2>
+                <p class="text-slate-400 leading-relaxed text-base">
+                    Hi! I am an independent visual artist creating brand identities, custom flyers, web designs, brand patterns, and spatial layouts for global clients. By bypassing the traditional agency model, you collaborate directly with me to bring your visual presence to life from the ground up.
+                </p>
+                <p class="text-slate-400 leading-relaxed text-base">
+                    My work covers everything from the initial spark to the final screen. I sketch and develop raw visual concepts directly from my first thoughts, establish the core identity assets, and design the complete, immersive digital environment.
+                </p>
+
+                <!-- Download Resume Interactive Card -->
+                <div class="p-6 rounded-2xl glass border border-white/5 flex items-center justify-between group cursor-pointer hover:border-accentPrimary/50 transition-colors">
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 rounded-xl bg-purple-500/10 text-accentPrimary group-hover:bg-accentPrimary group-hover:text-black transition-colors duration-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-white font-bold text-sm">Download Work Capabilities Profile</p>
+                            <p class="text-xs text-slate-500">PDF Document</p>
+                        </div>
+                    </div>
+                    <div class="text-slate-500 group-hover:text-white transition-colors">
+                        <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Skills and Tech Stack Block -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Tech Cap 1 -->
+                    <div class="p-6 rounded-2xl glow-card glass">
+                        <div class="text-accentPrimary text-2xl mb-4">✨</div>
+                        <h3 class="text-lg font-bold text-white mb-2">Logo & Brand Identity</h3>
+                        <p class="text-sm text-slate-400 mb-4">I design unique logos and visual styles that give your business a premium, professional look.</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">LOGOS</span>
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">COLOR PALETTES</span>
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">TYPOGRAPHY</span>
+			    <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">ILLUSTRATOR</span>
+			    <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">PHOTOSHOP</span>
+                        </div>
+                    </div>
+                    <!-- Tech Cap 2 -->
+                    <div class="p-6 rounded-2xl glow-card glass">
+                        <div class="text-accentSecondary text-2xl mb-4">💻</div>
+                        <h3 class="text-lg font-bold text-white mb-2">Modern Web Designs</h3>
+                        <p class="text-sm text-slate-400 mb-4">Crafting pixel-perfect layouts, responsive desktop-to-mobile frameworks, and immersive digital environments.</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">FIGMA</span>
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">FULLY FUNCTIONAL</span>
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">LAYOUT</span>
+			    <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">MOBILE FRIENDLY</span>
+                        </div>
+                    </div>
+                    <!-- Tech Cap 3 -->
+                    <div class="p-6 rounded-2xl glow-card glass">
+                        <div class="text-purple-400 text-2xl mb-4">🎨</div>
+                        <h3 class="text-lg font-bold text-white mb-2">2D & 3D Custom Artworks</h3>
+                        <p class="text-sm text-slate-400 mb-4">Creating bespoke digital illustrations, abstract textures, and tailored 2D graphic assets that make your project stand out.</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">PROCREATE</span>
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">ILLUSTRATIONS</span>
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">HIGH QUALITY</span>
+			    <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">VECTOR ART</span>
+                        </div>
+                    </div>
+                    <!-- Tech Cap 4 -->
+                    <div class="p-6 rounded-2xl glow-card glass">
+                        <div class="text-amber-400 text-2xl mb-4">⚡</div>
+                        <h3 class="text-lg font-bold text-white mb-2">Print Layouts & Brand Assets</h3>
+                        <p class="text-sm text-slate-400 mb-4">Structuring beautiful typographic hierarchies, custom flyer layouts, and highly scalable graphics optimized for everything from micro icons to massive outdoor billboards.</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">PRINT DESIGNS</span>
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">FLYERS</span>
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-white/5 text-slate-400">BILLBOARDS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CORE FREELANCE SERVICES -->
+    <section id="services" class="py-24 px-6 bg-[#07070F]/80 relative z-10 border-y border-white/5 scroll-mt-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+                <p class="text-sm font-bold uppercase tracking-widest text-accentPrimary">CORE SERVICES</p>
+                <h2 class="text-3xl md:text-5xl font-black text-white">Full-service visual engineering.</h2>
+                <p class="text-slate-400">Three complementary disciplines blended perfectly together to build cohesive digital products.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Service Card 1 -->
+                <div class="p-8 rounded-3xl glass glow-card flex flex-col justify-between min-h-[400px]">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white mb-8">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-4">Graphic Design & Illustration</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            Constructing beautiful, bespoke graphics and vector illustrations styled perfectly for websites, branding assets, social communications, and media design packages.
+                        </p>
+                    </div>
+                    <ul class="space-y-2 text-xs font-semibold tracking-wide text-slate-400 mt-auto border-t border-white/5 pt-6">
+                        <li class="flex items-center gap-2">✔ Brand Style Guides & Manuals</li>
+                        <li class="flex items-center gap-2">✔ High-fidelity Vector Illustration</li>
+                        <li class="flex items-center gap-2">✔ Custom Iconography Systems</li>
+                    </ul>
+                </div>
+
+                <!-- Service Card 2 -->
+                <div class="p-8 rounded-3xl glass glow-card flex flex-col justify-between min-h-[400px]">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white mb-8">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-4">High-End UI/UX Design</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            Tailor-making fully interactive website and mobile prototypes in Figma. Crafted for conversion paths, clean micro-interactions, and premium presentation structures.
+                        </p>
+                    </div>
+                    <ul class="space-y-2 text-xs font-semibold tracking-wide text-slate-400 mt-auto border-t border-white/5 pt-6">
+                        <li class="flex items-center gap-2">✔ Full-fidelity Figma Prototype Blueprints</li>
+                        <li class="flex items-center gap-2">✔ Responsive Layout Engineering</li>
+                        <li class="flex items-center gap-2">✔ User Experience Consulting & Auditing</li>
+                    </ul>
+                </div>
+
+                <!-- Service Card 3 -->
+                <div class="p-8 rounded-3xl glass glow-card flex flex-col justify-between min-h-[400px]">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-white mb-8">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-4">Elite Web Development</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            Converting designs into clean-coded frontend code utilizing modern systems, ultra-responsive HTML structure, fast styles, and bespoke GSAP animations.
+                        </p>
+                    </div>
+                    <ul class="space-y-2 text-xs font-semibold tracking-wide text-slate-400 mt-auto border-t border-white/5 pt-6">
+                        <li class="flex items-center gap-2">✔ Hand-crafted Semantic Coding Styles</li>
+                        <li class="flex items-center gap-2">✔ Advanced GSAP Animation Choreography</li>
+                        <li class="flex items-center gap-2">✔ Ultra-fast Landing Page Engineering</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTFOLIO FILTERABLE GALLERY -->
+    <section id="portfolio" class="py-24 px-6 max-w-7xl mx-auto relative z-10 scroll-mt-20">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
+            <div class="space-y-4">
+                <p class="text-sm font-bold uppercase tracking-widest text-accentSecondary">EXPLORE MY RECENT WORK</p>
+                <h2 class="text-3xl md:text-5xl font-black text-white">Portfolio</h2>
+                <p class="text-slate-400 max-w-lg">Hover to view creative tags, click to explore comprehensive layout system details, objectives, and client feedback.</p>
+            </div>
+
+            <!-- Categories Filters -->
+            <div class="flex flex-wrap gap-2 text-xs font-bold tracking-wider uppercase">
+                <button onclick="filterPortfolio('all')" class="portfolio-tab px-5 py-3 rounded-full bg-white text-dark hover:bg-white hover:text-dark transition-all duration-300 shadow-lg" data-target="all">
+                    Show All
+                </button>
+                <button onclick="filterPortfolio('branding')" class="portfolio-tab px-5 py-3 rounded-full bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all duration-300" data-target="branding">
+                    Branding & Logos
+                </button>
+                <button onclick="filterPortfolio('uiux')" class="portfolio-tab px-5 py-3 rounded-full bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all duration-300" data-target="uiux">
+                    UI/UX Design
+                </button>
+                <button onclick="filterPortfolio('development')" class="portfolio-tab px-5 py-3 rounded-full bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all duration-300" data-target="development">
+                    Web Development
+                </button>
+            </div>
+        </div>
+
+        <!-- Portfolio Cards Grid -->
+        <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Project Card 1 -->
+            <div class="portfolio-item group glass rounded-3xl overflow-hidden cursor-pointer glow-card flex flex-col justify-between" data-category="uiux" onclick="openProjectModal('valyria')">
+                <div class="relative overflow-hidden aspect-[4/3] bg-gradient-to-br from-purple-900/30 to-violet-900/40 p-1 flex items-center justify-center">
+                    <img src="C:\Users\Yousuf Traders\Downloads\finalll.jpeg" 
+             	    	alt="Valyria SaaS Financial Platform Full Mockup" 
+             		class="w-[100%] h-[100%] rounded-t-3xl shadow-2xl object-cover object-center border border-white/15">
+                </div>
+                <div class="p-6">
+                    <span class="text-xs font-extrabold uppercase text-accentSecondary tracking-widest">UI/UX Design</span>
+                    <h3 class="text-xl font-bold text-white mt-1 group-hover:text-accentPrimary transition-colors">Valyria SaaS Financial Platform</h3>
+                    <p class="text-sm text-slate-400 mt-2 line-clamp-2">Complete brand visual system and high-fidelity dashboard design for a Swiss fintech company.</p>
+                </div>
+            </div>
+
+            <!-- Project Card 2 -->
+            <div class="portfolio-item group glass rounded-3xl overflow-hidden cursor-pointer glow-card flex flex-col justify-between" data-category="branding" onclick="openProjectModal('etheria')">
+                <div class="relative overflow-hidden aspect-[4/3] bg-gradient-to-br from-indigo-900/30 to-blue-900/40 p-1 flex items-center justify-center">
+                    <!-- Premium visual branding graphic mockup -->
+                    <div class="w-56 h-56 rounded-full border border-white/15 p-2 flex items-center justify-center relative">
+                        <div class="w-44 h-44 rounded-full bg-gradient-to-tr from-accentPrimary/40 via-cyan-500/10 to-transparent flex items-center justify-center border border-white/10 relative animate-spin" style="animation-duration: 15s;">
+                            <div class="absolute inset-4 rounded-full border border-dashed border-white/20"></div>
+                        </div>
+                        <div class="absolute w-24 h-24 rounded-2xl glass border border-white/20 flex items-center justify-center shadow-2xl">
+                            <span class="text-4xl font-extrabold text-gradient">E</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <span class="text-xs font-extrabold uppercase text-purple-400 tracking-widest">Branding</span>
+                    <h3 class="text-xl font-bold text-white mt-1 group-hover:text-accentPrimary transition-colors">Etheria Decentralized Protocol</h3>
+                    <p class="text-sm text-slate-400 mt-2 line-clamp-2">Brand conceptualization, vector logos, and custom modern visual identity guidelines.</p>
+                </div>
+            </div>
+
+            <!-- Project Card 3 -->
+            <div class="portfolio-item group glass rounded-3xl overflow-hidden cursor-pointer glow-card flex flex-col justify-between" data-category="development" onclick="openProjectModal('apex')">
+                <div class="relative overflow-hidden aspect-[4/3] bg-gradient-to-br from-pink-900/30 to-purple-900/40 p-1 flex items-center justify-center">
+                    <!-- Website mockup with live simulated code lines -->
+                    <div class="w-[85%] h-[85%] rounded-t-xl bg-[#090910] border border-white/10 p-4 font-mono text-[10px] text-slate-500 flex flex-col gap-2 relative overflow-hidden">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-3 h-3 rounded-full bg-red-500/50"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500/50"></span>
+                            <span class="w-3 h-3 rounded-full bg-emerald-500/50"></span>
+                        </div>
+                        <div class="text-emerald-400"><span class="text-slate-500">&lt;</span>div <span class="text-accentSecondary">class</span>=<span class="text-amber-300">"hero-glow-card"</span><span class="text-slate-500">&gt;</span></div>
+                        <div class="pl-4 text-purple-400">const <span class="text-white">canvas</span> = document.getElementById(<span class="text-amber-300">'mesh'</span>);</div>
+                        <div class="pl-4 text-purple-400">const <span class="text-white">ctx</span> = canvas.getContext(<span class="text-amber-300">'2d'</span>);</div>
+                        <div class="pl-4 text-slate-500">// Run performance optimization engine</div>
+                        <div class="pl-4 text-purple-400">const <span class="text-white">optEngine</span> = <span class="text-emerald-400">new</span> PerformanceEngine({</div>
+                        <div class="pl-8 text-white">smoothScrolling: true,</div>
+                        <div class="pl-8 text-white">hardwareAcceleration: true</div>
+                        <div class="pl-4 text-purple-400">});</div>
+                        <div class="text-emerald-400"><span class="text-slate-500">&lt;/</span>div<span class="text-slate-500">&gt;</span></div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <span class="text-xs font-extrabold uppercase text-rose-400 tracking-widest">Web Development</span>
+                    <h3 class="text-xl font-bold text-white mt-1 group-hover:text-accentPrimary transition-colors">Apex Gaming Technologies</h3>
+                    <p class="text-sm text-slate-400 mt-2 line-clamp-2">Silky-smooth high performance landing page featuring intricate GSAP scroll animations.</p>
+                </div>
+            </div>
+
+            <!-- Project Card 4 -->
+            <div class="portfolio-item group glass rounded-3xl overflow-hidden cursor-pointer glow-card flex flex-col justify-between" data-category="branding" onclick="openProjectModal('morpheus')">
+                <div class="relative overflow-hidden aspect-[4/3] bg-gradient-to-br from-indigo-900/20 to-violet-900/30 p-1 flex items-center justify-center">
+                    <!-- Brand aesthetic composition -->
+                    <div class="w-[80%] p-6 rounded-2xl glass border border-white/10 text-center relative flex flex-col gap-3">
+                        <p class="text-[10px] uppercase tracking-widest text-accentPrimary font-bold">Morpheus Studio</p>
+                        <h4 class="text-lg font-extrabold text-white">REIMAGINE REALTIES</h4>
+                        <div class="flex justify-center gap-1.5 mt-2">
+                            <span class="w-8 h-8 rounded-full bg-white flex items-center justify-center font-bold text-[10px] text-dark">M</span>
+                            <span class="w-8 h-8 rounded-full bg-accentPrimary/20 border border-accentPrimary/40 flex items-center justify-center font-bold text-[10px] text-accentPrimary">S</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <span class="text-xs font-extrabold uppercase text-purple-400 tracking-widest">Branding</span>
+                    <h3 class="text-xl font-bold text-white mt-1 group-hover:text-accentPrimary transition-colors">Morpheus Spatial Art Studio</h3>
+                    <p class="text-sm text-slate-400 mt-2 line-clamp-2">Comprehensive branding system design and minimalist layout guidelines for an immersive agency.</p>
+                </div>
+            </div>
+
+            <!-- Project Card 5 -->
+            <div class="portfolio-item group glass rounded-3xl overflow-hidden cursor-pointer glow-card flex flex-col justify-between" data-category="uiux" onclick="openProjectModal('novasphere')">
+                <div class="relative overflow-hidden aspect-[4/3] bg-gradient-to-br from-cyan-900/20 to-blue-900/30 p-1 flex items-center justify-center">
+                    <!-- Premium visual dashboard card -->
+                    <div class="w-[85%] h-[85%] rounded-2xl glass border border-white/15 p-4 flex flex-col justify-between">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-white">NovaSphere</span>
+                            <span class="text-[10px] text-emerald-400">Live Server</span>
+                        </div>
+                        <div class="space-y-2 my-2">
+                            <div class="h-1 bg-white/10 rounded w-full"></div>
+                            <div class="h-1 bg-white/10 rounded w-[85%]"></div>
+                            <div class="h-1 bg-white/10 rounded w-[60%]"></div>
+                        </div>
+                        <div class="h-24 bg-gradient-to-t from-cyan-500/20 to-transparent rounded-lg border border-cyan-500/10 flex items-center justify-center">
+                            <span class="text-xs text-cyan-300 tracking-wider">Interactive Topology Map</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <span class="text-xs font-extrabold uppercase text-accentSecondary tracking-widest">UI/UX Design</span>
+                    <h3 class="text-xl font-bold text-white mt-1 group-hover:text-accentPrimary transition-colors">NovaSphere Digital Cloud</h3>
+                    <p class="text-sm text-slate-400 mt-2 line-clamp-2">Cloud orchestration dashboard design mapping complex server instances for enterprise scaling.</p>
+                </div>
+            </div>
+
+            <!-- Project Card 6 -->
+            <div class="portfolio-item group glass rounded-3xl overflow-hidden cursor-pointer glow-card flex flex-col justify-between" data-category="development" onclick="openProjectModal('solaris')">
+                <div class="relative overflow-hidden aspect-[4/3] bg-gradient-to-br from-orange-900/20 to-pink-900/30 p-1 flex items-center justify-center">
+                    <!-- Beautiful CSS grid visualizer -->
+                    <div class="w-[85%] h-[85%] grid grid-cols-4 gap-2">
+                        <div class="col-span-2 row-span-2 rounded-xl bg-orange-500/20 border border-orange-500/30 p-3 flex flex-col justify-between">
+                            <span class="text-[9px] text-orange-400">Layout 1</span>
+                            <span class="text-lg font-bold text-white">40%</span>
+                        </div>
+                        <div class="col-span-2 rounded-xl bg-white/5 border border-white/10 p-2"></div>
+                        <div class="rounded-xl bg-white/5 border border-white/10 p-2"></div>
+                        <div class="rounded-xl bg-white/5 border border-white/10 p-2"></div>
+                        <div class="col-span-4 rounded-xl bg-gradient-to-r from-orange-500/20 to-pink-500/20 border border-white/15 h-16"></div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <span class="text-xs font-extrabold uppercase text-rose-400 tracking-widest">Web Development</span>
+                    <h3 class="text-xl font-bold text-white mt-1 group-hover:text-accentPrimary transition-colors">Solaris Real Estate System</h3>
+                    <p class="text-sm text-slate-400 mt-2 line-clamp-2">Extremely quick fully custom responsive layout showcasing grid-based image modules.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CASE STUDY DETAILS MODAL -->
+    <div id="project-modal" class="fixed inset-0 z-50 overflow-y-auto hidden">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-dark/90 backdrop-blur-xl transition-opacity" onclick="closeProjectModal()"></div>
+        
+        <!-- Modal Content Container -->
+        <div class="flex items-center justify-center min-h-screen p-4 md:p-12 relative z-10">
+            <div class="glass w-full max-w-4xl rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative my-8">
+                <!-- Close Button -->
+                <button onclick="closeProjectModal()" class="absolute top-6 right-6 w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-dark transition-all duration-300 z-50">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+
+                <div id="modal-content" class="p-8 md:p-12 space-y-8">
+                    <!-- Loaded dynamically via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <<!-- THE UNIQUE VALUE: INTERACTIVE PROJECT BRIEF BUILDER -->
+    <section id="process" class="py-24 px-6 bg-[#07070F]/80 border-y border-white/5 relative z-10 scroll-mt-20">
+    	<div class="max-w-4xl mx-auto">
+        	<div class="text-center mb-16 space-y-4">
+            		<p class="text-sm font-bold uppercase tracking-widest text-accentPrimary">CUSTOM BRIEF GENERATOR</p>
+            		<h2 class="text-3xl md:text-5xl font-black text-white">Let's calculate your project</h2>
+            		<p class="text-slate-400">Estimate your delivery scope, budget requirements, and trigger a custom-tailored creative inquiry inside the contact form below instantly.</p>
+        	</div>
+
+        <!-- Custom Calculator Widget -->
+        <div class="glass rounded-3xl p-8 border border-white/10 relative overflow-hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Left: Select Scope options -->
+                <div class="space-y-6">
+                    <h3 class="text-lg font-bold text-white uppercase tracking-wider border-b border-white/5 pb-2">1. Choose Services</h3>
+                    
+                    <!-- Checkboxes for options -->
+                    <div class="space-y-3">
+                        <label class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 cursor-pointer hover:bg-white/10 transition-colors group">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" id="srv-logo" checked onchange="calculateBrief()" class="w-4.5 h-4.5 accent-accentPrimary">
+                                <span class="text-sm text-slate-300 font-medium group-hover:text-white">1. Custom Logo Design</span>
+                            </div>
+                            <span class="text-xs text-accentSecondary font-bold">$250</span>
+                        </label>
+                        
+                        <label class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 cursor-pointer hover:bg-white/10 transition-colors group">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" id="srv-flyer" checked onchange="calculateBrief()" class="w-4.5 h-4.5 accent-accentPrimary">
+                                <span class="text-sm text-slate-300 font-medium group-hover:text-white">2. Flyer Design</span>
+                            </div>
+                            <span class="text-xs text-accentSecondary font-bold">$100</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Right: Deliverable Dynamics & Live Cost State -->
+                <div class="flex flex-col justify-between space-y-8 bg-white/5 p-6 rounded-2xl border border-white/5">
+                    <div>
+                        <h3 class="text-lg font-bold text-white uppercase tracking-wider border-b border-white/5 pb-2">2. Price Estimation</h3>
+                        <!-- Timeline Slider -->
+                        <div class="mt-6 space-y-2">
+                            <div class="flex justify-between text-xs text-slate-400 font-bold">
+                                <span>Fast Delivery</span>
+                                <span>Standard Delivery</span>
+                            </div>
+                            <input type="range" id="timeline-slider" min="1" max="3" value="2" oninput="calculateBrief()" class="w-full accent-accentPrimary bg-slate-800 rounded-lg appearance-none h-2">
+                            <p id="timeline-text" class="text-sm text-accentSecondary font-bold text-center pt-2">Timeline: Standard Delivery (3-4 Weeks)</p>
+                        </div>
+                    </div>
+
+                    <!-- Price calculation panel -->
+                    <div class="border-t border-white/5 pt-6 space-y-4">
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-sm text-slate-400 font-semibold">Estimated Value:</span>
+                            <span id="calc-total" class="text-3xl md:text-4xl font-black text-white">$350</span>
+                        </div>
+                    	<button onclick="injectCalculatorBrief()" class="w-full py-4 rounded-xl bg-gradient-to-r from-accentPrimary to-accentSecondary text-black font-extrabold hover:shadow-lg transition-transform hover:-translate-y-0.5 active:translate-y-0">
+                            Apply Selection to Inquiry Form
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLIENT TESTIMONIALS -->
+    <section class="py-24 px-6 max-w-7xl mx-auto relative z-10">
+        <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+            <p class="text-sm font-bold uppercase tracking-widest text-accentSecondary">VERIFIED FEEDBACKS</p>
+            <h2 class="text-3xl md:text-5xl font-black text-white">Trust from international founders.</h2>
+            <p class="text-slate-400">Read through statements shared by clients upon successfully delivering modern high-end interactive systems.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Review 1 -->
+            <div class="p-8 rounded-3xl glass flex flex-col justify-between">
+                <div class="space-y-4">
+                    <!-- Stars -->
+                    <div class="flex text-amber-400 text-xs">★★★★★</div>
+                    <p class="text-slate-300 italic text-sm leading-relaxed">
+                        "The level of attention paid to every single frame, animation layout, and interactive transition on our new corporate site is extraordinary. He brought Valyria to life smoothly with no structural lag."
+                    </p>
+                </div>
+                <div class="flex items-center gap-4 mt-8 border-t border-white/5 pt-6">
+                    <div class="w-10 h-10 rounded-full bg-accentPrimary/20 flex items-center justify-center font-bold text-white text-xs">
+                        MH
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-white">Marcus H.</p>
+                        <p class="text-xs text-slate-500">VP of Design, Valyria</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 2 -->
+            <div class="p-8 rounded-3xl glass flex flex-col justify-between">
+                <div class="space-y-4">
+                    <!-- Stars -->
+                    <div class="flex text-amber-400 text-xs">★★★★★</div>
+                    <p class="text-slate-300 italic text-sm leading-relaxed">
+                        "He designed an absolute masterpiece branding system for Etheria. We received our vector logos, interactive asset sheets, and system colors completely compiled in one professional profile."
+                    </p>
+                </div>
+                <div class="flex items-center gap-4 mt-8 border-t border-white/5 pt-6">
+                    <div class="w-10 h-10 rounded-full bg-accentSecondary/20 flex items-center justify-center font-bold text-white text-xs">
+                        AL
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-white">Aurelia L.</p>
+                        <p class="text-xs text-slate-500">Co-Founder, Etheria Protocol</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 3 -->
+            <div class="p-8 rounded-3xl glass flex flex-col justify-between">
+                <div class="space-y-4">
+                    <!-- Stars -->
+                    <div class="flex text-amber-400 text-xs">★★★★★</div>
+                    <p class="text-slate-300 italic text-sm leading-relaxed">
+                        "A developer who actually understands design systems. The clean CSS layouts and robust scroll triggers he crafted for Solaris Real Estate are pixel-perfect and highly optimized."
+                    </p>
+                </div>
+                <div class="flex items-center gap-4 mt-8 border-t border-white/5 pt-6">
+                    <div class="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center font-bold text-white text-xs">
+                        TD
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-white">Tobias D.</p>
+                        <p class="text-xs text-slate-500">Technical Lead, Solaris Ltd.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT INQUIRY SECTION -->
+    <section id="contact" class="py-24 px-6 bg-[#07070F]/80 border-t border-white/5 relative z-10 scroll-mt-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                
+                <!-- Left Hand Card: Socials & Availability -->
+                <div class="lg:col-span-5 space-y-8">
+                    <p class="text-sm font-bold uppercase tracking-widest text-accentPrimary">HIRE ME</p>
+                    <h2 class="text-3xl md:text-5xl font-black text-white leading-tight">Ready to launch your concept?</h2>
+                    <p class="text-slate-400">
+                        Reach out for freelance inquiries, contract offers, or simply to say hello. Use the interactive form to submit your design or development goals directly to my terminal inbox.
+                    </p>
+
+                    <!-- Active Working Hours and Location Info -->
+                    <div class="space-y-4 text-sm">
+                        <div class="flex items-center gap-3">
+                            <span class="w-5 h-5 flex items-center justify-center text-accentPrimary">📨</span>
+                            <span class="text-slate-300">lylataylor2232@gmail.com (24hr SLA response)</span>
+                        </div>
+                    </div>
+
+                    <!-- Verified Platforms Grid -->
+                    <div class="pt-8 border-t border-white/5">
+                        <p class="text-xs uppercase text-slate-500 font-bold tracking-wider mb-4">Direct Communication Outlets</p>
+                        <div class="flex flex-wrap gap-2">
+                            <a href="https://linkedin.com" target="_blank" class="px-4 py-2 rounded-xl glass text-xs font-bold text-slate-300 hover:text-white hover:border-accentPrimary/50 transition-all">Discord</a>
+                            <a href="https://github.com" target="_blank" class="px-4 py-2 rounded-xl glass text-xs font-bold text-slate-300 hover:text-white hover:border-accentSecondary/50 transition-all">Facebook</a>
+                            <a href="https://dribbble.com" target="_blank" class="px-4 py-2 rounded-xl glass text-xs font-bold text-slate-300 hover:text-white hover:border-accentPrimary/50 transition-all">Instagram</a>
+                            <a href="https://wa.me/#" target="_blank" class="px-4 py-2 rounded-xl glass text-xs font-bold text-slate-300 hover:text-white hover:border-emerald-500/50 transition-all flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> WhatsApp Chat
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Hand Card: Interactive Form -->
+                <div class="lg:col-span-7">
+                    <div class="glass p-8 md:p-10 rounded-3xl border border-white/10 relative">
+                        <form id="contact-form" onsubmit="handleFormSubmission(event)" class="space-y-6">
+                            
+                            <!-- Input Row 1 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label for="frm-name" class="text-xs uppercase font-bold text-slate-400 tracking-wider">Your Name *</label>
+                                    <input type="text" id="frm-name" required placeholder="e.g. Liam Sterling" class="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/5 focus:border-accentPrimary focus:outline-none transition-colors text-white placeholder-slate-600 text-sm">
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="frm-email" class="text-xs uppercase font-bold text-slate-400 tracking-wider">Your Corporate Email *</label>
+                                    <input type="email" id="frm-email" required placeholder="e.g. liam@company.com" class="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/5 focus:border-accentPrimary focus:outline-none transition-colors text-white placeholder-slate-600 text-sm">
+                                </div>
+                            </div>
+
+                            <!-- Input Row 2 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label for="frm-project" class="text-xs uppercase font-bold text-slate-400 tracking-wider">Project Type</label>
+                                    <input type="text" id="frm-project" placeholder="e.g. Full-scale SaaS Redesign" class="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/5 focus:border-accentPrimary focus:outline-none transition-colors text-white placeholder-slate-600 text-sm">
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="frm-budget" class="text-xs uppercase font-bold text-slate-400 tracking-wider">Estimated Budget (USD)</label>
+                                    <input type="text" id="frm-budget" placeholder="e.g. $5,000 - $10,000" class="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/5 focus:border-accentPrimary focus:outline-none transition-colors text-white placeholder-slate-600 text-sm">
+                                </div>
+                            </div>
+
+                            <!-- Input Row 3 (Injected Dynamic Message) -->
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <label for="frm-message" class="text-xs uppercase font-bold text-slate-400 tracking-wider">Describe your objectives *</label>
+                                    <span id="brief-badge" class="hidden text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded bg-accentPrimary/20 text-accentPrimary">Brief Calculator Applied</span>
+                                </div>
+                                <textarea id="frm-message" rows="5" required placeholder="Share your creative requirements, timeline constraints, or initial suggestions..." class="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/5 focus:border-accentPrimary focus:outline-none transition-colors text-white placeholder-slate-600 text-sm resize-none"></textarea>
+                            </div>
+
+                            <!-- Submit Trigger Button -->
+                            <button type="submit" class="w-full py-4 rounded-xl bg-white text-dark hover:bg-gradient-to-r hover:from-accentPrimary hover:to-accentSecondary hover:text-white font-extrabold hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] transition-all duration-300 transform active:scale-95">
+                                Send Message Securely
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SUCCESS NOTIFICATION DIALOG (No-Alert Policy) -->
+    <div id="success-dialog" class="fixed inset-0 z-50 overflow-y-auto hidden">
+        <div class="fixed inset-0 bg-dark/95 backdrop-blur-md"></div>
+        <div class="flex items-center justify-center min-h-screen p-6 relative z-10">
+            <div class="glass max-w-md w-full p-8 rounded-3xl border border-emerald-500/20 text-center space-y-6">
+                <div class="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-3xl mx-auto">
+                    ✔
+                </div>
+                <div class="space-y-2">
+                    <h3 class="text-2xl font-black text-white">Inquiry Forwarded Successfully</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        Thank you! Your creative specs, estimated budget, and message have been recorded directly. I will evaluate your requirements and reach out via email within 12 business hours.
+                    </p>
+                </div>
+                <button onclick="closeSuccessDialog()" class="w-full py-3.5 rounded-xl bg-emerald-500 text-black font-extrabold hover:bg-emerald-400 transition-colors">
+                    Awesome, Thank You
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN FOOTER -->
+    <footer class="py-12 px-6 border-t border-white/5 bg-dark relative z-10 text-center">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-md bg-gradient-to-br from-accentPrimary to-accentSecondary flex items-center justify-center font-extrabold text-black text-[11px]">
+                    C
+                </div>
+                <span class="text-sm font-semibold tracking-tight text-white">Create With Me — Portfolio Portfolio Brand</span>
+            </div>
+            
+            <p class="text-xs text-slate-500">
+                &copy; 2026 Create With Me. LYLA TAYLOR.
+            </p>
+
+            <div class="flex items-center gap-4 text-xs text-slate-400 font-medium">
+                <a href="#" class="hover:text-white transition-colors">Privacy Statement</a>
+                <span>•</span>
+                <a href="#" class="hover:text-white transition-colors">Terms of Work</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE SCRIPTS -->
+    <script>
+        // Custom GSAP Entrance Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Spotlight flow tracker
+            const glow = document.getElementById('spotlight-glow');
+            document.addEventListener('mousemove', (e) => {
+                gsap.to(glow, {
+                    x: e.clientX,
+                    y: e.clientY,
+                    duration: 0.1,
+                    ease: 'power2.out'
+                });
+            });
+
+            // Hero section animated entry
+            gsap.from('.hero-title span', {
+                y: 50,
+                opacity: 0,
+                duration: 1.2,
+                stagger: 0.2,
+                ease: 'power4.out'
+            });
+
+            gsap.from('.hero-subtitle', {
+                opacity: 0,
+                y: 30,
+                duration: 1,
+                delay: 0.6,
+                ease: 'power3.out'
+            });
+
+            gsap.from('.hero-ctas', {
+                opacity: 0,
+                y: 20,
+                duration: 0.8,
+                delay: 0.8,
+                ease: 'power3.out'
+            });
+
+            gsap.from('.hero-stats', {
+                opacity: 0,
+                y: 30,
+                duration: 1,
+                delay: 1,
+                ease: 'power3.out'
+            });
+
+            // Smooth Header Scroll Effect
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('header');
+                if (window.scrollY > 50) {
+                    header.classList.add('py-4', 'bg-dark/95');
+                    header.classList.remove('h-20');
+                } else {
+                    header.classList.remove('py-4', 'bg-dark/95');
+                    header.classList.add('h-20');
+                }
+            });
+
+            // Live project brief calculations
+            calculateBrief();
+        });
+
+        // Toggle Mobile Menu drawer
+        const mobileMenu = document.getElementById('mobile-menu');
+        const bar1 = document.getElementById('bar1');
+        const bar2 = document.getElementById('bar2');
+        const bar3 = document.getElementById('bar3');
+
+        document.getElementById('mobile-menu-toggle').addEventListener('click', toggleMobileMenu);
+
+        function toggleMobileMenu() {
+            const isOpen = !mobileMenu.classList.contains('translate-x-full');
+            if (isOpen) {
+                mobileMenu.classList.add('translate-x-full');
+                bar1.classList.remove('rotate-45', 'translate-y-2');
+                bar2.classList.remove('opacity-0');
+                bar3.classList.remove('-rotate-45', '-translate-y-2');
+            } else {
+                mobileMenu.classList.remove('translate-x-full');
+                bar1.classList.add('rotate-45', 'translate-y-2');
+                bar2.classList.add('opacity-0');
+                bar3.classList.add('-rotate-45', '-translate-y-2');
+            }
+        }
+
+        // Live Dynamic Cost Estimator State Logic
+	function calculateBrief() {
+    		let total = 0;
+    		if (document.getElementById('srv-logo').checked) total += 250;
+    		if (document.getElementById('srv-flyer').checked) total += 140;
+
+    		const slider = document.getElementById('timeline-slider').value;
+    		const timelineText = document.getElementById('timeline-text');
+    
+    		let timelineFactor = 1;
+    		if (slider == 1) {
+        		timelineText.innerText = "Timeline: Fast Priority Delivery (Within 48-72 hours)";
+        		timelineFactor = 1.30; // Rush fee
+    		} else if (slider == 2) {
+        		timelineText.innerText = "Timeline: Standard Delivery (Within 1 Week)";
+        		timelineFactor = 1.0;
+    		} else {
+        		timelineText.innerText = "Timeline: Flexible / Ongoing Delivery (1-2 Weeks)";
+        		timelineFactor = 0.70; // Discount
+    		}
+
+    		const finalTotal = Math.round(total * timelineFactor);
+    		document.getElementById('calc-total').innerText = `$${finalTotal.toLocaleString()}`;
+	}
+
+	// Inject computed specifications straight into contact form
+		function injectCalculatorBrief() {
+    			const selectedDeliverables = [];
+    			if (document.getElementById('srv-logo').checked) selectedDeliverables.push("Custom Logo Design");
+    			if (document.getElementById('srv-flyer').checked) selectedDeliverables.push("Flyer Design");
+
+    			const finalTotal = document.getElementById('calc-total').innerText;
+    			const timeline = document.getElementById('timeline-text').innerText;
+
+			const messageBox = document.getElementById('frm-message');
+			const budgetBox = document.getElementById('frm-budget');
+    			const projectTypeBox = document.getElementById('frm-project');
+
+			budgetBox.value = finalTotal;
+    			projectTypeBox.value = selectedDeliverables.join(" + ");
+    			messageBox.value = `Hi! I simulated a project blueprint using your brief generator:\n\n` +
+                       			`- Selected Capabilities: ${selectedDeliverables.join(', ')}\n` +
+                       			`- ${timeline}\n` +
+                       			`- Estimated Value: ${finalTotal}\n\n` +
+                       			`Let's discuss further details on how we can implement this.`;
+
+    			document.getElementById('brief-badge').classList.remove('hidden');
+
+    			// Scroll down to contact section
+    			document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+		}
+
+
+        // Filter Portfolio Gallery Items with GSAP Fade
+        function filterPortfolio(category) {
+            // Update Tab states
+            const tabs = document.querySelectorAll('.portfolio-tab');
+            tabs.forEach(tab => {
+                if (tab.getAttribute('data-target') === category) {
+                    tab.classList.add('bg-white', 'text-dark');
+                    tab.classList.remove('bg-white/5', 'text-slate-400');
+                } else {
+                    tab.classList.remove('bg-white', 'text-dark');
+                    tab.classList.add('bg-white/5', 'text-slate-400');
+                }
+            });
+
+            // Filter projects
+            const items = document.querySelectorAll('.portfolio-item');
+            items.forEach(item => {
+                const itemCategory = item.getAttribute('data-category');
+                if (category === 'all' || itemCategory === category) {
+                    gsap.to(item, {
+                        scale: 1,
+                        opacity: 1,
+                        duration: 0.4,
+                        display: 'flex',
+                        ease: 'power2.out'
+                    });
+                } else {
+                    gsap.to(item, {
+                        scale: 0.9,
+                        opacity: 0,
+                        duration: 0.4,
+                        display: 'none',
+                        ease: 'power2.out'
+                    });
+                }
+            });
+        }
+
+        // Mock Case-study data structure
+        const projectData = {
+            valyria: {
+                title: "Valyria SaaS Financial Platform",
+                tag: "UI/UX DESIGN",
+                client: "Valyria AG, Switzerland",
+                timeline: "6 Weeks",
+                objective: "To completely overhaul the existing interface structure of a complex multi-asset dashboard. The goal was to visualised raw metrics clearly, reduce customer onboarding churn, and craft a premier, dark aesthetic compatible with European market standards.",
+                solution: "We engineered high-fidelity components, custom widgets, clear visual line graphs, and standardized navigation layouts in Figma, then verified usability via user experience flow analytics.",
+                feedback: '"The user interface overhaul reduced our client onboarding time by over 40% and immediately elevated our platform status to a luxury-tier tool."'
+            },
+            etheria: {
+                title: "Etheria Decentralized Protocol",
+                tag: "BRANDING",
+                client: "Etheria Labs, Singapore",
+                timeline: "4 Weeks",
+                objective: "To create a scalable digital visual identity for a novel decentralized storage structure. The branding needed to communicate trust, high technical precision, and spatial artistic innovation.",
+                solution: "We designed a multi-layer conceptual SVG logo system, structured detailed typographic manuals, and generated ready-to-deploy web graphics styled consistently for immediate launch assets.",
+                feedback: '"Outstanding conceptual art direction. Our brand now stands out drastically amongst a crowded space of generic modern tech layouts."'
+            },
+            apex: {
+                title: "Apex Gaming Technologies",
+                tag: "WEB DEVELOPMENT",
+                client: "Apex Tech Inc., US",
+                timeline: "5 Weeks",
+                objective: "To develop a fast loading, fully responsive promotional landing page. The website required advanced GSAP web motion animations and high-performance interactive segments to secure consumer signups.",
+                solution: "Constructed completely using clean, streamlined modern HTML5/CSS and high fidelity Vanilla JavaScript. Combined customized GSAP scroll triggering timelines for rich page mechanics and optimized code paths for rapid 99% Lighthouse rankings.",
+                feedback: '"A highly professional setup. He translated complex aesthetic motions cleanly with no lag across both mobile and desktop browsers."'
+            },
+            morpheus: {
+                title: "Morpheus Spatial Art Studio",
+                tag: "BRANDING",
+                client: "Morpheus, Italy",
+                timeline: "3 Weeks",
+                objective: "Establish a minimalistic, high-end visual language for an architecture and spatial visualization group based in Rome.",
+                solution: "Designed responsive visual systems, premium black-on-white stationery layouts, and architectural style guidelines that speak directly to luxury luxury real estate firms.",
+                feedback: '"Exemplary minimalism. The brand presence matches our physical structures perfectly."'
+            },
+            novasphere: {
+                title: "NovaSphere Digital Cloud",
+                tag: "UI/UX DESIGN",
+                client: "NovaSphere Ltd, Canada",
+                timeline: "8 Weeks",
+                objective: "Create comprehensive wireframes and high-fidelity layouts for enterprise server systems to monitor spatial data pipelines.",
+                solution: "Designed a dark-themed glassmorphic command panel focusing heavily on ergonomic layouts, active alerts, and immediate interaction targets.",
+                feedback: '"Our technicians now enjoy an incredibly balanced and reliable interface that reduces active diagnostic load."'
+            },
+            solaris: {
+                title: "Solaris Real Estate System",
+                tag: "WEB DEVELOPMENT",
+                client: "Solaris Capital, London",
+                timeline: "4 Weeks",
+                objective: "Deploy a highly interactive portfolio viewer listing prime London architectural spots using fluid grid controls.",
+                solution: "Coded custom JavaScript CSS-grid filters with smooth layouts, optimized high-res responsive pictures, and integrated clean feedback forms.",
+                feedback: '"Working directly with an independent specialist yielded better layout efficiency and faster turnaround than conventional agencies."'
+            }
+        };
+
+        // Open detailed case-study modal
+        function openProjectModal(key) {
+            const project = projectData[key];
+            if (!project) return;
+
+            const content = `
+                <div class="space-y-6">
+                    <div>
+                        <span class="text-xs font-bold uppercase text-accentSecondary tracking-widest">${project.tag}</span>
+                        <h2 class="text-3xl md:text-4xl font-black text-white mt-1">${project.title}</h2>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 border-y border-white/5 py-6 text-sm">
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase">Client</p>
+                            <p class="text-white font-semibold mt-1">${project.client}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase">Timeline</p>
+                            <p class="text-white font-semibold mt-1">${project.timeline}</p>
+                        </div>
+                        <div class="col-span-2 md:col-span-1">
+                            <p class="text-xs text-slate-500 font-bold uppercase">Deliverable Scope</p>
+                            <p class="text-white font-semibold mt-1">Premium Core Assets</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-bold text-white uppercase tracking-wider">Project Objective</h4>
+                        <p class="text-slate-400 leading-relaxed text-sm">${project.objective}</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-bold text-white uppercase tracking-wider">Solution Delivered</h4>
+                        <p class="text-slate-400 leading-relaxed text-sm">${project.solution}</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-white/5 border border-white/5 space-y-2">
+                        <p class="text-xs font-bold uppercase tracking-widest text-accentPrimary">Client Feedback</p>
+                        <p class="text-white italic text-sm leading-relaxed">${project.feedback}</p>
+                    </div>
+
+                    <div class="pt-6 flex justify-end">
+                        <a href="#contact" onclick="closeProjectModal()" class="px-6 py-3 rounded-xl bg-white text-dark font-extrabold text-xs tracking-wider uppercase hover:bg-gradient-to-r hover:from-accentPrimary hover:to-accentSecondary hover:text-white transition-all">
+                            Discuss a Similar Build
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modal-content').innerHTML = content;
+            document.getElementById('project-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Stop scroll
+        }
+
+        // Close case-study modal
+        function closeProjectModal() {
+            document.getElementById('project-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Restore scroll
+        }
+
+        // Handle Contact Form Submission
+        function handleFormSubmission(event) {
+            event.preventDefault();
+
+	    const formData = {
+        	name: document.getElementById('frm-name').value,
+        	email: document.getElementById('frm-email').value,
+        	project: document.getElementById('frm-project').value,
+        	budget: document.getElementById('frm-budget').value,
+        	message: document.getElementById('frm-message').value,
+        // If using Web3Forms, you add your access key here:
+        access_key: "YOUR-ACCESS-KEY-HERE" 
+    };
+
+            // Clear form inputs
+            document.getElementById('frm-name').value = '';
+            document.getElementById('frm-email').value = '';
+            document.getElementById('frm-project').value = '';
+            document.getElementById('frm-budget').value = '';
+            document.getElementById('frm-message').value = '';
+            document.getElementById('brief-badge').classList.add('hidden');
+
+            // Open Success Dialog directly (No browser alert)
+            document.getElementById('success-dialog').classList.remove('hidden');
+        }
+
+        function closeSuccessDialog() {
+            document.getElementById('success-dialog').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
